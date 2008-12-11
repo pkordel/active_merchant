@@ -21,10 +21,6 @@ module ActiveMerchant #:nodoc:
       module Dib
         class Helper < ActiveMerchant::Billing::Integrations::Helper
           
-          # Parameters specific to DIBS Integration
-          # See http://tech.dibs.dk/integration-methods/flexwin/parameters/
-          # for a list of all parameters
-          
           def initialize(order, account, options = {})
             super
             self.currency_code = options[:currency]
@@ -49,6 +45,18 @@ module ActiveMerchant #:nodoc:
             end 
           end     
           
+          # da = Danish (default)
+          # sv = Swedish
+          # no = Norwegian
+          # en = English
+          # nl = Dutch
+          # de = German
+          # fr = French
+          # fi = Finnish
+          # es = Spanish
+          # it = Italian
+          # fo = Faroese
+          # pl = Polish
           def language=(language)
             if %w(da sv no en nl de fr fi es it fo pl).include?(language)
               add_field(:lang, language)
@@ -106,14 +114,23 @@ module ActiveMerchant #:nodoc:
           mapping :currency, "currency"
           
           # Optional Dibs params
+          # See http://tech.dibs.dk/integration-methods/flexwin/parameters/
+          # for a list of all parameters
+          
           mapping :calculate_fee, 'calcfee'
           mapping :decorator, 'decorator'
           mapping :color, 'color'
           mapping :instant_capture, 'capturenow'
           mapping :language, 'lang'
-          mapping :paytype, 'paytype' # Optional in dibs
-          mapping :uniqueoid, 'uniqueoid' # Optional in dibs
+          mapping :paytype, 'paytype'
+          mapping :uniqueoid, 'uniqueoid'
           mapping :skiplastpage, 'skiplastpage' # Set to skip last page of payment process and return to shop
+          mapping :ticketrule, 'ticketrule'
+          mapping :md5key, 'md5key'
+          mapping :dibs_account, 'account'
+          mapping :capturenow, 'capturenow'
+          mapping :ip, 'ip'
+          mapping :HTTP_COOKIE, 'HTTP_COOKIE'
           
         end
       end
