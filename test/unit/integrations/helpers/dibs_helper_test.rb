@@ -39,19 +39,22 @@ class DibHelperTest < Test::Unit::TestCase
     
     @helper.language = 'bogus'
     assert_field 'lang', nil
-    
     @helper.language = 'sv'
     assert_field 'lang', 'sv'
 
     @helper.decorator = "invalid"
     assert_field 'decorator', nil
-
     @helper.decorator = "default"
     assert_field 'decorator', 'default'
     @helper.decorator = "basal"
     assert_field 'decorator', 'basal'
     @helper.decorator = "rich"
     assert_field 'decorator', 'rich'
+    
+    @helper.color = 'bogus'
+    assert_field 'color', nil
+    @helper.color = 'sand'
+    assert_field 'color', 'sand'
   end
   
   # def test_customer_fields

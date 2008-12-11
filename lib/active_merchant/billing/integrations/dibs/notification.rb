@@ -69,25 +69,26 @@ module ActiveMerchant #:nodoc:
           #       ... log possible hacking attempt ...
           #     end
           def acknowledge      
-            payload = raw
-
-            uri = URI.parse(Dib.notification_confirmation_url)
-
-            request = Net::HTTP::Post.new(uri.path)
-
-            request['Content-Length'] = "#{payload.size}"
-            request['User-Agent'] = "Active Merchant -- http://home.leetsoft.com/am"
-            request['Content-Type'] = "application/x-www-form-urlencoded" 
-
-            http = Net::HTTP.new(uri.host, uri.port)
-            http.verify_mode    = OpenSSL::SSL::VERIFY_NONE unless @ssl_strict
-            http.use_ssl        = true
-
-            response = http.request(request, payload)
-
-            # Replace with the appropriate codes
-            raise StandardError.new("Faulty Dib result: #{response.body}") unless ["AUTHORISED", "DECLINED"].include?(response.body)
-            response.body == "AUTHORISED"
+            true
+            # payload = raw
+            # 
+            # uri = URI.parse(Dib.notification_confirmation_url)
+            # 
+            # request = Net::HTTP::Post.new(uri.path)
+            # 
+            # request['Content-Length'] = "#{payload.size}"
+            # request['User-Agent'] = "Active Merchant -- http://home.leetsoft.com/am"
+            # request['Content-Type'] = "application/x-www-form-urlencoded" 
+            # 
+            # http = Net::HTTP.new(uri.host, uri.port)
+            # http.verify_mode    = OpenSSL::SSL::VERIFY_NONE unless @ssl_strict
+            # http.use_ssl        = true
+            # 
+            # response = http.request(request, payload)
+            # 
+            # # Replace with the appropriate codes
+            # raise StandardError.new("Faulty Dib result: #{response.body}") unless ["AUTHORISED", "DECLINED"].include?(response.body)
+            # response.body == "AUTHORISED"
           end
  private
 

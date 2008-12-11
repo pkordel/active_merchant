@@ -84,6 +84,12 @@ module ActiveMerchant #:nodoc:
             end
           end
           
+          def color=(color)
+            if %w(sand grey blue).include?(color)
+              add_field 'color', color
+            end
+          end
+          
           # Standard AM parameters
           mapping :account, 'merchant'
           mapping :amount, 'amount'
@@ -99,11 +105,12 @@ module ActiveMerchant #:nodoc:
           mapping :test, "test"
           mapping :currency, "currency"
           
+          # Optional Dibs params
           mapping :calculate_fee, 'calcfee'
           mapping :decorator, 'decorator'
+          mapping :color, 'color'
           mapping :instant_capture, 'capturenow'
-          
-          # Optional Dibs params
+          mapping :language, 'lang'
           mapping :paytype, 'paytype' # Optional in dibs
           mapping :uniqueoid, 'uniqueoid' # Optional in dibs
           mapping :skiplastpage, 'skiplastpage' # Set to skip last page of payment process and return to shop
