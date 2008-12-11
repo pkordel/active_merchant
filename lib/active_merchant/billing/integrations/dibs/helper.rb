@@ -49,6 +49,12 @@ module ActiveMerchant #:nodoc:
             end 
           end     
           
+          def language=(language)
+            if %w(da sv no en nl de fr fi es it fo pl).include?(language)
+              add_field(:lang, language)
+            end
+          end
+          
           def currency_codes
             {
               :dkk  => '208',
@@ -105,10 +111,13 @@ module ActiveMerchant #:nodoc:
           # it = Italian
           # fo = Faroese
           # pl = Polish
-          mapping :language, 'lang'
+          mapping :lang, 'lang'
           mapping :calculate_fee, 'calcfee'
           mapping :decorator, 'decorator'
           mapping :instant_capture, 'capturenow'
+          
+          # Optional Dibs params
+          
           
         end
       end

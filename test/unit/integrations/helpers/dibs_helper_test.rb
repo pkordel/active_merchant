@@ -36,6 +36,12 @@ class DibHelperTest < Test::Unit::TestCase
     assert_field 'capturenow','true'
     @helper.description = "This is a test"
     assert_field 'ordertext', 'This is a test'
+    
+    @helper.language = 'bogus'
+    assert_field 'lang', nil
+    
+    @helper.language = 'sv'
+    assert_field 'lang', 'sv'
 
     @helper.decorator = "invalid"
     assert_field 'decorator', nil
