@@ -99,25 +99,14 @@ module ActiveMerchant #:nodoc:
           mapping :test, "test"
           mapping :currency, "currency"
           
-          # da = Danish (default)
-          # sv = Swedish
-          # no = Norwegian
-          # en = English
-          # nl = Dutch
-          # de = German
-          # fr = French
-          # fi = Finnish
-          # es = Spanish
-          # it = Italian
-          # fo = Faroese
-          # pl = Polish
-          mapping :lang, 'lang'
           mapping :calculate_fee, 'calcfee'
           mapping :decorator, 'decorator'
           mapping :instant_capture, 'capturenow'
           
           # Optional Dibs params
-          
+          mapping :paytype, 'paytype' # Optional in dibs
+          mapping :uniqueoid, 'uniqueoid' # Optional in dibs
+          mapping :skiplastpage, 'skiplastpage' # Set to skip last page of payment process and return to shop
           
         end
       end
