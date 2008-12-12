@@ -1,16 +1,3 @@
-# Country codes
-# da = Danish (default)
-# sv = Swedish
-# no = Norwegian
-# en = English
-# nl = Dutch
-# de = German
-# fr = French
-# fi = Finnish
-# es = Spanish
-# it = Italian
-# fo = Faroese
-# pl = Polish
 
 # Credit card for testing
 # 4711100000000000 06/24 684
@@ -131,6 +118,7 @@ module ActiveMerchant #:nodoc:
           mapping :capturenow, 'capturenow'
           mapping :ip, 'ip'
           mapping :HTTP_COOKIE, 'HTTP_COOKIE'
+          mapping :maketicket, 'maketicket'
           
         end
       end
