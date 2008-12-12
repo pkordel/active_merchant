@@ -24,34 +24,11 @@ module ActiveMerchant #:nodoc:
           
           def currency
             params['currency']
-          end
-
-          # When was this payment received by the client. 
-          def received_at
-            params['']
-          end
-
-          def payer_email
-            params['']
-          end
-         
-          def receiver_email
-            params['']
-          end 
-
-          def security_key
-            params['']
-          end
-
-          
+          end          
 
           # Was this a test transaction?
           def test?
             params['test'] == 'test'
-          end
-
-          def status
-            params['']
           end
 
           # Acknowledge the transaction to Dib. This method has to be called after a new 
