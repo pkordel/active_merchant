@@ -33,6 +33,8 @@ module ActiveMerchant #:nodoc:
 
       self.arb_test_url = 'https://apitest.authorize.net/xml/v1/request.api'
       self.arb_live_url = 'https://api.authorize.net/xml/v1/request.api'
+      
+      class_inheritable_accessor :duplicate_window
 
       APPROVED, DECLINED, ERROR, FRAUD_REVIEW = 1, 2, 3, 4
 
@@ -86,6 +88,7 @@ module ActiveMerchant #:nodoc:
         add_creditcard(post, creditcard)
         add_address(post, options)
         add_customer_data(post, options)
+        add_duplicate_window(post)
 
         commit('AUTH_ONLY', money, post)
       end
@@ -103,6 +106,7 @@ module ActiveMerchant #:nodoc:
         add_creditcard(post, creditcard)
         add_address(post, options)
         add_customer_data(post, options)
+        add_duplicate_window(post)
 
         commit('AUTH_CAPTURE', money, post)
       end
@@ -169,10 +173,10 @@ module ActiveMerchant #:nodoc:
       #
       # * <tt>:interval</tt> -- A hash containing information about the interval of time between payments. Must
       #   contain the keys <tt>:length</tt> and <tt>:unit</tt>. <tt>:unit</tt> can be either <tt>:months</tt> or <tt>:days</tt>.
-      #   If <tt>:unit</tt> is <tt>:months</tt> then <tt>:interval</tt> must be an integer between 1 and 12 inclusive.
-      #   If <tt>:unit</tt> is <tt>:days</tt> then <tt>:interval</tt> must be an integer between 7 and 365 inclusive.
+      #   If <tt>:unit</tt> is <tt>:months</tt> then <tt>:length</tt> must be an integer between 1 and 12 inclusive.
+      #   If <tt>:unit</tt> is <tt>:days</tt> then <tt>:length</tt> must be an integer between 7 and 365 inclusive.
       #   For example, to charge the customer once every three months the hash would be
-      #   +{ :unit => :months, :interval => 3 }+ (REQUIRED)
+      #   +:interval => { :unit => :months, :length => 3 }+ (REQUIRED)
       # * <tt>:duration</tt> -- A hash containing keys for the <tt>:start_date</tt> the subscription begins (also the date the
       #   initial billing occurs) and the total number of billing <tt>:occurences</tt> or payments for the subscription. (REQUIRED)
       def recurring(money, creditcard, options={})
@@ -319,9 +323,17 @@ module ActiveMerchant #:nodoc:
           post[:customer_ip] = options[:ip]
         end
       end
+      
+      # x_duplicate_window won't be sent by default, because sending it changes the response.
+      # "If this field is present in the request with or without a value, an enhanced duplicate transaction response will be sent."
+      # (as of 2008-12-30) http://www.authorize.net/support/AIM_guide_SCC.pdf
+      def add_duplicate_window(post)
+        unless duplicate_window.nil?
+          post[:duplicate_window] = duplicate_window
+        end
+      end
 
       def add_address(post, options)
-
         if address = options[:billing_address] || options[:address]
           post[:address] = address[:address1].to_s
           post[:company] = address[:company].to_s
@@ -330,6 +342,18 @@ module ActiveMerchant #:nodoc:
           post[:city]    = address[:city].to_s
           post[:country] = address[:country].to_s
           post[:state]   = address[:state].blank?  ? 'n/a' : address[:state]
+        end
+        
+        if address = options[:shipping_address]
+          post[:ship_to_first_name] = address[:first_name].to_s
+          post[:ship_to_last_name] = address[:last_name].to_s
+          post[:ship_to_address] = address[:address1].to_s
+          post[:ship_to_company] = address[:company].to_s
+          post[:ship_to_phone]   = address[:phone].to_s
+          post[:ship_to_zip]     = address[:zip].to_s
+          post[:ship_to_city]    = address[:city].to_s
+          post[:ship_to_country] = address[:country].to_s
+          post[:ship_to_state]   = address[:state].blank?  ? 'n/a' : address[:state]
         end
       end
 
@@ -627,7 +651,5 @@ module ActiveMerchant #:nodoc:
         end
       end
     end
-
-    AuthorizedNetGateway = AuthorizeNetGateway
   end
 end
