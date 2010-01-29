@@ -115,6 +115,10 @@ module ActiveMerchant #:nodoc:
               xml.tag! 'n2:cpp-payflow-color', options[:background_color] unless options[:background_color].blank?
               
               xml.tag! 'n2:LocaleCode', options[:locale] unless options[:locale].blank?
+
+              # for order values etc, and item info
+              add_payment_details(xml, money, options)
+              
             end
           end
         end

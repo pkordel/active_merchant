@@ -114,7 +114,7 @@ module ActiveMerchant #:nodoc:
           mapping :skiplastpage, 'skiplastpage' # Set to skip last page of payment process and return to shop
           mapping :ticketrule, 'ticketrule'
           mapping :md5key, 'md5key'
-          mapping :dibs_account, 'account'
+          mapping :dib_account, 'account'
           mapping :capturenow, 'capturenow'
           mapping :ip, 'ip'
           mapping :HTTP_COOKIE, 'HTTP_COOKIE'

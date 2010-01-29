@@ -290,6 +290,52 @@ module ActiveMerchant #:nodoc:
         end
       end
       
+      def add_payment_detail_item(xml, item)
+        currency_code = options[:currency]
+        xml.tag! 'n2:PaymentDetailsItem' do
+          xml.tag! 'n2:Name',        item[:name]        unless item[:name].blank?
+          xml.tag! 'n2:Description', item[:description] unless item[:description].blank?
+          xml.tag! 'n2:Number',      item[:sku]         unless item[:sku].blank?
+          xml.tag! 'n2:Quantity',    item[:qty]         unless item[:qty].blank?
+          xml.tag! 'n2:Amount',      amount(item[:amount]), 'currencyID' => currency_code unless item[:amount].blank?
+          xml.tag! 'n2:Tax',         amount(item[:tax]), 'currencyID' => currency_code unless item[:tax].blank?
+          xml.tag! 'n2:ItemWeight',  item[:weight]      unless item[:weight].blank?
+          xml.tag! 'n2:ItemHeight',  item[:height]      unless item[:height].blank?
+          xml.tag! 'n2:ItemWidth',   item[:width]       unless item[:width].blank?
+          xml.tag! 'n2:ItemLength',  item[:length]      unless item[:length].blank?
+        end
+      end
+     
+      def add_payment_details(xml, money, options) 
+        currency_code = options[:currency]
+
+        xml.tag! 'n2:PaymentDetails' do
+          xml.tag! 'n2:OrderTotal', amount(money), 'currencyID' => currency_code
+                
+          # All of the values must be included together and add up to the order total
+          if [:subtotal, :shipping, :handling, :tax].all?{ |o| options.has_key?(o) }
+            xml.tag! 'n2:ItemTotal', amount(options[:subtotal]), 'currencyID' => currency_code
+            xml.tag! 'n2:ShippingTotal', amount(options[:shipping]),'currencyID' => currency_code
+            xml.tag! 'n2:HandlingTotal', amount(options[:handling]),'currencyID' => currency_code
+            xml.tag! 'n2:TaxTotal', amount(options[:tax]), 'currencyID' => currency_code
+          end
+               
+          # don't enforce inclusion yet - see how it works
+          xml.tag! 'n2:InsuranceOptionOffered', options[:insurance_offered] ? '1' : '0' unless options[:insurance_offered].blank?
+          xml.tag! 'n2:InsuranceTotal', amount(options[:insurance]), 'currencyID' => currency_code unless options[:insurance].blank?
+          xml.tag! 'n2:ShippingDiscount', amount(options[:ship_discount]), 'currencyID' => currency_code unless options[:ship_discount].blank?
+
+          # query - use slices too? or just risk reject? (QQ: injection risk???)
+          xml.tag! 'n2:OrderDescription', options[:description] unless options[:description].blank?
+          xml.tag! 'n2:Custom', options[:custom] unless options[:custom].blank?
+          xml.tag! 'n2:InvoiceID', options[:order_id] unless options[:order_id].blank?
+          xml.tag! 'n2:ButtonSource', application_id.to_s.slice(0,32) unless application_id.blank? 
+          xml.tag! 'n2:NotifyURL', options[:notify_url] unless options[:notify_url].blank?
+          add_address(xml, 'n2:ShipToAddress', options[:shipping_address] || options[:address])
+          options[:items].each {|i| add_payment_detail_item xml, i } if options[:items]
+        end
+      end
+      
       def endpoint_url
         URLS[test? ? :test : :live][@options[:signature].blank? ? :certificate : :signature]
       end

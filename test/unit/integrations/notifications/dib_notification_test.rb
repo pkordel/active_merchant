@@ -4,16 +4,16 @@ class DibNotificationTest < Test::Unit::TestCase
   include ActiveMerchant::Billing::Integrations
 
   def setup
-    @dibs = Dib::Notification.new(http_raw_data)
+    @dib = Dib::Notification.new(http_raw_data)
   end
 
   def test_accessors
-    assert @dibs.complete?
-    assert_equal "2345", @dibs.transaction_id
-    assert_equal "111", @dibs.order_id
-    assert_equal "22", @dibs.gross
-    assert_equal "578", @dibs.currency
-    assert @dibs.test?
+    assert @dib.complete?
+    assert_equal "2345", @dib.transaction_id
+    assert_equal "111", @dib.order_id
+    assert_equal "22", @dib.gross
+    assert_equal "578", @dib.currency
+    assert @dib.test?
   end
   
   # Replace with real successful acknowledgement code
@@ -25,7 +25,7 @@ class DibNotificationTest < Test::Unit::TestCase
   end
   
   def test_respond_to_acknowledge
-    assert @dibs.respond_to?(:acknowledge)
+    assert @dib.respond_to?(:acknowledge)
   end
 
   private
@@ -48,26 +48,26 @@ class DibNotificationTest < Test::Unit::TestCase
       :nok  => '578',
       :chf  => '756',
       :try  => '949'
-    }.detect{ |k,v| v == @dibs.currency }[0].to_s.upcase
+    }.detect{ |k,v| v == @dib.currency }[0].to_s.upcase
   end
 
   # def setup
-  #   @dibs = Dib::Notification.new(http_raw_data)
+  #   @dib = Dib::Notification.new(http_raw_data)
   # end
   # 
   # def test_accessors
-  #   assert @dibs.complete?
-  #   assert_equal "", @dibs.status
-  #   assert_equal "", @dibs.transaction_id
-  #   assert_equal "", @dibs.item_id
-  #   assert_equal "", @dibs.gross
-  #   assert_equal "", @dibs.currency
-  #   assert_equal "", @dibs.received_at
-  #   assert @dibs.test?
+  #   assert @dib.complete?
+  #   assert_equal "", @dib.status
+  #   assert_equal "", @dib.transaction_id
+  #   assert_equal "", @dib.item_id
+  #   assert_equal "", @dib.gross
+  #   assert_equal "", @dib.currency
+  #   assert_equal "", @dib.received_at
+  #   assert @dib.test?
   # end
   # 
   # def test_compositions
-  #   assert_equal Money.new(3166, 'USD'), @dibs.amount
+  #   assert_equal Money.new(3166, 'USD'), @dib.amount
   # end
   # 
   # # Replace with real successful acknowledgement code
@@ -79,7 +79,7 @@ class DibNotificationTest < Test::Unit::TestCase
   # end
   # 
   # def test_respond_to_acknowledge
-  #   assert @dibs.respond_to?(:acknowledge)
+  #   assert @dib.respond_to?(:acknowledge)
   # end
   # 
   # private
