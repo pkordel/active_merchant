@@ -65,20 +65,7 @@ module ActiveMerchant #:nodoc:
               xml.tag! 'n2:PaymentAction', action
               xml.tag! 'n2:Token', options[:token]
               xml.tag! 'n2:PayerID', options[:payer_id]
-              xml.tag! 'n2:PaymentDetails' do
-                xml.tag! 'n2:OrderTotal', amount(money), 'currencyID' => currency_code
-                
-                # All of the values must be included together and add up to the order total
-                if [:subtotal, :shipping, :handling, :tax].all?{ |o| options.has_key?(o) }
-                  xml.tag! 'n2:ItemTotal', amount(options[:subtotal]), 'currencyID' => currency_code
-                  xml.tag! 'n2:ShippingTotal', amount(options[:shipping]),'currencyID' => currency_code
-                  xml.tag! 'n2:HandlingTotal', amount(options[:handling]),'currencyID' => currency_code
-                  xml.tag! 'n2:TaxTotal', amount(options[:tax]), 'currencyID' => currency_code
-                end
-                
-                xml.tag! 'n2:NotifyURL', options[:notify_url]
-                xml.tag! 'n2:ButtonSource', application_id.to_s.slice(0,32) unless application_id.blank?
-              end
+              add_payment_details(xml, money, options) 
             end
           end
         end
@@ -93,7 +80,6 @@ module ActiveMerchant #:nodoc:
             xml.tag! 'n2:Version', API_VERSION
             xml.tag! 'n2:SetExpressCheckoutRequestDetails' do
               xml.tag! 'n2:PaymentAction', action
-              xml.tag! 'n2:OrderTotal', amount(money).to_f.zero? ? amount(100) : amount(money), 'currencyID' => options[:currency] || currency(money)
               if options[:max_amount]
                 xml.tag! 'n2:MaxAmount', amount(options[:max_amount]), 'currencyID' => options[:currency] || currency(options[:max_amount])
               end
@@ -103,9 +89,7 @@ module ActiveMerchant #:nodoc:
               xml.tag! 'n2:ReturnURL', options[:return_url]
               xml.tag! 'n2:CancelURL', options[:cancel_return_url]
               xml.tag! 'n2:IPAddress', options[:ip]
-              xml.tag! 'n2:OrderDescription', options[:description]
               xml.tag! 'n2:BuyerEmail', options[:email] unless options[:email].blank?
-              xml.tag! 'n2:InvoiceID', options[:order_id]
         
               # Customization of the payment page
               xml.tag! 'n2:PageStyle', options[:page_style] unless options[:page_style].blank?
