@@ -83,22 +83,29 @@ module ActiveMerchant #:nodoc:
               if options[:max_amount]
                 xml.tag! 'n2:MaxAmount', amount(options[:max_amount]), 'currencyID' => options[:currency] || currency(options[:max_amount])
               end
-              add_address(xml, 'n2:Address', options[:shipping_address] || options[:address])
-              xml.tag! 'n2:AddressOverride', options[:address_override] ? '1' : '0'
-              xml.tag! 'n2:NoShipping', options[:no_shipping] ? '1' : '0'
               xml.tag! 'n2:ReturnURL', options[:return_url]
               xml.tag! 'n2:CancelURL', options[:cancel_return_url]
-              xml.tag! 'n2:IPAddress', options[:ip]
-              xml.tag! 'n2:BuyerEmail', options[:email] unless options[:email].blank?
+              xml.tag! 'n2:CallbackURL', options[:callback_url] unless options[:callback_url].blank?
+              xml.tag! 'n2:CallbackTimeout', options[:callback_timeout] unless options[:callback_timeout].blank?
+              # flat rate shipping options -- required if using callback, TODO
+              xml.tag! 'n2:ReqConfirmShipping', options[:req_confirm_shipping] ? '1' : '0'
+              xml.tag! 'n2:NoShipping', options[:no_shipping] ? '1' : '0'
+              # NOT INCLUDED IN SETUP -- GRAB ELSEWHERE? -- xml.tag! 'n2:IPAddress', options[:ip]
+              xml.tag! 'n2:AllowNote', options[:allow_note] ? '1' : '0'
+              xml.tag! 'n2:AddressOverride', options[:address_override] ? '1' : '0' # force yours
+              xml.tag! 'n2:LocaleCode', options[:locale] unless options[:locale].blank?
         
               # Customization of the payment page
               xml.tag! 'n2:PageStyle', options[:page_style] unless options[:page_style].blank?
-              xml.tag! 'n2:cpp-image-header', options[:header_image] unless options[:header_image].blank?
+              xml.tag! 'n2:cpp-header-image', options[:header_image] unless options[:header_image].blank?
               xml.tag! 'n2:cpp-header-back-color', options[:header_background_color] unless options[:header_background_color].blank?
               xml.tag! 'n2:cpp-header-border-color', options[:header_border_color] unless options[:header_border_color].blank?
               xml.tag! 'n2:cpp-payflow-color', options[:background_color] unless options[:background_color].blank?
               
-              xml.tag! 'n2:LocaleCode', options[:locale] unless options[:locale].blank?
+              xml.tag! 'n2:BuyerEmail', options[:email] unless options[:email].blank?
+              xml.tag! 'n2:SolutionType', options[:solution_type] unless options[:solution_type].blank?
+              xml.tag! 'n2:LandingPage', options[:landing_page] unless options[:landing_page].blank?
+              xml.tag! 'n2:ChannelType', options[:channel_type] unless options[:channel_type].blank?
 
               # for order values etc, and item info
               add_payment_details(xml, money, options)
